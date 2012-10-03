@@ -138,6 +138,7 @@
 @synthesize minimumDate = _minimumDate;
 @synthesize maximumDate = _maximumDate;
 @synthesize disabledDates = _disabledDates;
+@synthesize disableSundays = _disableSundays;
 @synthesize shouldFillCalendar = _shouldFillCalendar;
 
 
@@ -163,6 +164,7 @@
         [self.dateFormatter setTimeStyle:NSDateFormatterNoStyle];
         self.dateFormatter.dateFormat = @"MMMM yyyy";
 
+        self.disableSundays = NO;
         self.shouldFillCalendar = NO;
 
         self.layer.cornerRadius = 6.0f;
@@ -310,7 +312,8 @@
             dateButton.backgroundColor = self.currentDateBackgroundColor;
         } else if ([date compare:self.minimumDate] == NSOrderedAscending ||
                 [date compare:self.maximumDate] == NSOrderedDescending ||
-                [self.disabledDates containsObject:date]) {
+                [self.disabledDates containsObject:date] ||
+                (self.disableSundays && [self dateIsSunday:date])) {
             [dateButton setTitleColor:self.disabledDateTextColor forState:UIControlStateNormal];
             dateButton.backgroundColor = self.disabledDateBackgroundColor;
         } else if (self.shouldFillCalendar && [self compareByMonth:date toDate:self.monthShowing] != NSOrderedSame) {
@@ -411,6 +414,8 @@
     } else if (self.maximumDate && [date compare:self.maximumDate] == NSOrderedDescending) {
         return;
     } else if ([self.disabledDates containsObject:date]) {
+        return;
+    } else if (self.disableSundays && [self dateIsSunday:date]) {
         return;
     } else {
         self.selectedDate = date;
@@ -611,6 +616,11 @@
     UIGraphicsEndImageContext();
 
     return coloredImg;
+}
+
+- (BOOL)dateIsSunday:(NSDate *)date {
+    NSDateComponents *comps = [self.calendar components:NSWeekdayCalendarUnit fromDate:date];
+    return comps.weekday == 1;
 }
 
 @end

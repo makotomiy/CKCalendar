@@ -29,6 +29,7 @@ typedef int startDay;
 @property (nonatomic, strong) NSDate *maximumDate;
 @property (nonatomic, strong) NSDate *selectedDate;
 @property (nonatomic, strong) NSSet *disabledDates;
+@property (nonatomic) BOOL disableSundays;
 @property (nonatomic) BOOL shouldFillCalendar;
 @property (nonatomic, weak) id<CKCalendarDelegate> delegate;
 
