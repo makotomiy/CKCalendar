@@ -135,9 +135,6 @@
 @synthesize cellWidth = _cellWidth;
 
 @synthesize calendarStartDay;
-@synthesize minimumDate = _minimumDate;
-@synthesize maximumDate = _maximumDate;
-@synthesize disabledDates = _disabledDates;
 @synthesize shouldFillCalendar = _shouldFillCalendar;
 
 
@@ -308,9 +305,8 @@
         } else if ([self dateIsToday:dateButton.date]) {
             [dateButton setTitleColor:self.currentDateTextColor forState:UIControlStateNormal];
             dateButton.backgroundColor = self.currentDateBackgroundColor;
-        } else if ([date compare:self.minimumDate] == NSOrderedAscending ||
-                [date compare:self.maximumDate] == NSOrderedDescending ||
-                [self.disabledDates containsObject:date]) {
+        } else if ([self.delegate respondsToSelector:@selector(calendar:isEnabledDate:)] &&
+                   [self.delegate calendar:self isEnabledDate:date]) {
             [dateButton setTitleColor:self.disabledDateTextColor forState:UIControlStateNormal];
             dateButton.backgroundColor = self.disabledDateBackgroundColor;
         } else if (self.shouldFillCalendar && [self compareByMonth:date toDate:self.monthShowing] != NSOrderedSame) {
@@ -406,11 +402,8 @@
 - (void)dateButtonPressed:(id)sender {
     DateButton *dateButton = sender;
     NSDate *date = dateButton.date;
-    if (self.minimumDate && [date compare:self.minimumDate] == NSOrderedAscending) {
-        return;
-    } else if (self.maximumDate && [date compare:self.maximumDate] == NSOrderedDescending) {
-        return;
-    } else if ([self.disabledDates containsObject:date]) {
+    if ([self.delegate respondsToSelector:@selector(calendar:isEnabledDate:)] &&
+        [self.delegate calendar:self isEnabledDate:date]) {
         return;
     } else {
         self.selectedDate = date;

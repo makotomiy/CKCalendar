@@ -6,7 +6,9 @@
 
 @property(nonatomic, strong) UILabel *dateLabel;
 @property(nonatomic, strong) NSDateFormatter *dateFormatter;
-
+@property(nonatomic, strong) NSDate *minimumDate;
+@property(nonatomic, strong) NSDate *maximumDate;
+@property(nonatomic, strong) NSDate *disabledDate;
 @end
 
 @implementation CKViewController
@@ -23,8 +25,9 @@
         self.dateFormatter = [[NSDateFormatter alloc] init];
         [self.dateFormatter setDateFormat:@"dd/MM/yyyy"];
         calendar.selectedDate = [self.dateFormatter dateFromString:@"18/07/2012"];
-        calendar.minimumDate = [self.dateFormatter dateFromString:@"09/07/2012"];
-        calendar.maximumDate = [self.dateFormatter dateFromString:@"29/07/2012"];
+        self.minimumDate = [self.dateFormatter dateFromString:@"09/07/2012"];
+        self.maximumDate = [self.dateFormatter dateFromString:@"29/07/2012"];
+        self.disabledDate = [self.dateFormatter dateFromString:@"20/07/2012"];
 
         calendar.frame = CGRectMake(10, 10, 300, 320);
         [self.view addSubview:calendar];
@@ -65,5 +68,11 @@
     self.dateLabel.text = [self.dateFormatter stringFromDate:date];
 }
 
+- (BOOL)calendar:(CKCalendarView *)calendar isEnabledDate:(NSDate *)date
+{
+    return [date compare:self.minimumDate] == NSOrderedAscending ||
+    [date compare:self.maximumDate] == NSOrderedDescending ||
+    [date isEqualToDate:self.disabledDate];
+}
 
 @end

@@ -25,10 +25,7 @@ enum {
 };
 typedef int startDay;
 
-@property (nonatomic, strong) NSDate *minimumDate;
-@property (nonatomic, strong) NSDate *maximumDate;
 @property (nonatomic, strong) NSDate *selectedDate;
-@property (nonatomic, strong) NSSet *disabledDates;
 @property (nonatomic) BOOL shouldFillCalendar;
 @property (nonatomic, weak) id<CKCalendarDelegate> delegate;
 
@@ -78,4 +75,6 @@ typedef int startDay;
 
 - (void)calendar:(CKCalendarView *)calendar didSelectDate:(NSDate *)date;
 
+@optional
+- (BOOL)calendar:(CKCalendarView *)calendar isEnabledDate:(NSDate *)date;
 @end
